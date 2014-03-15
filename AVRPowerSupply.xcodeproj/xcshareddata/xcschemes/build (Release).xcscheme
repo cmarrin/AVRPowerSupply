@@ -3,7 +3,7 @@
    LastUpgradeVersion = "0500"
    version = "1.3">
    <BuildAction
-      parallelizeBuildables = "YES"
+      parallelizeBuildables = "NO"
       buildImplicitDependencies = "YES">
       <BuildActionEntries>
          <BuildActionEntry
@@ -14,10 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "498311A918C05C3700751432"
-               BuildableName = "sample"
-               BlueprintName = "sample"
-               ReferencedContainer = "container:marrinator.xcodeproj">
+               BlueprintIdentifier = "4994B75C18BDBB6F0001437D"
+               BuildableName = "libm8r"
+               BlueprintName = "libm8r"
+               ReferencedContainer = "container:../../../../Library/Marrinator/marrinator.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
@@ -28,9 +28,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "498311A918C05C3700751432"
-               BuildableName = "app"
-               BlueprintName = "app"
+               BlueprintIdentifier = "49AEC36A18CF4DCC00C010A1"
+               BuildableName = "AVRPowerSupply"
+               BlueprintName = "AVRPowerSupply"
                ReferencedContainer = "container:AVRPowerSupply.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -40,16 +40,16 @@
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES"
-      buildConfiguration = "Debug">
+      buildConfiguration = "Report">
       <Testables>
       </Testables>
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "498311A918C05C3700751432"
-            BuildableName = "sample"
-            BlueprintName = "sample"
-            ReferencedContainer = "container:marrinator.xcodeproj">
+            BlueprintIdentifier = "49AEC36A18CF4DCC00C010A1"
+            BuildableName = "AVRPowerSupply"
+            BlueprintName = "AVRPowerSupply"
+            ReferencedContainer = "container:AVRPowerSupply.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </TestAction>
@@ -65,10 +65,10 @@
       <BuildableProductRunnable>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "498311A918C05C3700751432"
-            BuildableName = "sample"
-            BlueprintName = "sample"
-            ReferencedContainer = "container:marrinator.xcodeproj">
+            BlueprintIdentifier = "49AEC36A18CF4DCC00C010A1"
+            BuildableName = "AVRPowerSupply"
+            BlueprintName = "AVRPowerSupply"
+            ReferencedContainer = "container:AVRPowerSupply.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -83,15 +83,15 @@
       <BuildableProductRunnable>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "498311A918C05C3700751432"
-            BuildableName = "sample"
-            BlueprintName = "sample"
-            ReferencedContainer = "container:marrinator.xcodeproj">
+            BlueprintIdentifier = "49AEC36A18CF4DCC00C010A1"
+            BuildableName = "AVRPowerSupply"
+            BlueprintName = "AVRPowerSupply"
+            ReferencedContainer = "container:AVRPowerSupply.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
    <AnalyzeAction
-      buildConfiguration = "Debug">
+      buildConfiguration = "Report">
    </AnalyzeAction>
    <ArchiveAction
       buildConfiguration = "Release"

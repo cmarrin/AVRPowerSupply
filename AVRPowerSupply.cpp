@@ -100,14 +100,9 @@ MyApp::handleEvent(EventType type, EventParam param)
     {
         case EV_IDLE:
         if (_captureCurrentValues) {
-            _busMilliVolts0 = _current0.busMilliVolts();
-            _busMilliVolts1 = _current1.busMilliVolts();
-            _shuntMicroAmps0 = _current0.shuntMicroAmps();
-            _shuntMicroAmps1 = _current1.shuntMicroAmps();
-            _lcd.device().setCursor(0, 0);
-            _lcd << FS("V0=") << _current0.busMilliVolts() << FS(" ") << FS("I0=") << _current0.shuntMicroAmps();
-            _lcd.device().setCursor(0, 1);
-            _lcd << FS("V1=") << _current1.busMilliVolts() << FS(" ") << FS("I1=") << _current1.shuntMicroAmps();
+            _lcd << TextLCDHome() <<
+                FS("V0=") << _current0.busMilliVolts() << FS(" ") << FS("I0=") << _current0.shuntMicroAmps() << '\n' <<
+                FS("V1=") << _current1.busMilliVolts() << FS(" ") << FS("I1=") << _current1.shuntMicroAmps();
             _captureCurrentValues = false;
         }
         break;

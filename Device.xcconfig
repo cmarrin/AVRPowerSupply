@@ -11,4 +11,4 @@ FREQUENCY = 16000000
 MCU = atmega328p
 AVRDUDE_DEVICE = DRAGON
 
-M8R_DIR = $(INSTALL_DIR)
+M8R_DIR = ../marrinator/library

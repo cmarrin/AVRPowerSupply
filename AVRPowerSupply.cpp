@@ -8,6 +8,7 @@
 #include "System.h"
 #include "EventListener.h"
 #include "DeviceStream.h"
+#include "INA219.h"
 #include "TextLCD.h"
 #include "Timer0.h"
 #include "TimerEventMgr.h"
@@ -50,7 +51,13 @@ using namespace m8r;
 
 class MyApp;
 
-class MyApp : public EventListener {    
+class MyErrorReporter : public ErrorReporter {
+public:
+    virtual void reportError(char c, uint16_t, ErrorConditionType);
+};
+
+class MyApp : public EventListener
+{    
 public:
     MyApp();
     
@@ -58,18 +65,32 @@ public:
     virtual void handleEvent(EventType type, EventParam);
     
     StatusLED _LEDPort;
+    ShutdownA _shutdownA;
+    ShutdownB _shutdownB;
     DeviceStream<TextLCD<16, 2, LCD_DEFAULT, LCDRS, NullOutputBit, LCDEnable, LCDD0, LCDD1, LCDD2, LCDD3> > _lcd;
-    TimerEventMgr<Timer0, TimerClockDIV64> m_timerEventMgr;
+    TimerEventMgr<Timer0, TimerClockDIV64> _timerEventMgr;
     RepeatingTimerEvent<1000> _timerEvent;
+    INA219 _current0, _current1;
+    uint16_t _busMilliVolts0, _busMilliVolts1;
+    uint16_t _shuntMicroAmps0, _shuntMicroAmps1;
+    bool _captureCurrentValues;
+
+    MyErrorReporter _errorReporter;
 };
 
 MyApp g_app;
 
 MyApp::MyApp()
+    : _current0(0x40)
+    , _current1(0x41)
+    , _captureCurrentValues(true)
 {
     sei();
+    _shutdownA = false;
+    _shutdownA = false;
     System::startEventTimer(&_timerEvent);
-    _lcd << FS("Hello World");
+    _current0.setCalibration(INA219::Range16V, 40, 330);
+    _current1.setCalibration(INA219::Range16V, 40, 330);
 }
 
 void
@@ -78,11 +99,38 @@ MyApp::handleEvent(EventType type, EventParam param)
     switch(type)
     {
         case EV_IDLE:
+        if (_captureCurrentValues) {
+            _busMilliVolts0 = _current0.busMilliVolts();
+            _busMilliVolts1 = _current1.busMilliVolts();
+            _shuntMicroAmps0 = _current0.shuntMicroAmps();
+            _shuntMicroAmps1 = _current1.shuntMicroAmps();
+            _lcd.device().setCursor(0, 0);
+            _lcd << FS("V0=") << _current0.busMilliVolts() << FS(" ") << FS("I0=") << _current0.shuntMicroAmps();
+            _lcd.device().setCursor(0, 1);
+            _lcd << FS("V1=") << _current1.busMilliVolts() << FS(" ") << FS("I1=") << _current1.shuntMicroAmps();
+            _captureCurrentValues = false;
+        }
         break;
         case EV_EVENT_TIMER:
-            _LEDPort = !_LEDPort;
+            _captureCurrentValues = true;
             break;
         default:
             break;
     }
 }
+
+void
+MyErrorReporter::reportError(char c, uint16_t code, ErrorConditionType type)
+{
+    switch(type) {
+        case ErrorConditionNote: g_app._lcd << "Note:"; break;
+        case ErrorConditionWarning: g_app._lcd << "Warn:"; break;
+        case ErrorConditionFatal: g_app._lcd << "Fatl:"; break;
+    }
+    g_app._lcd << code;
+    if (type == ErrorConditionFatal)
+        while (1) ;
+    
+    System::msDelay<1000>();
+}
+

@@ -5,6 +5,6 @@
       location = "group:AVRPowerSupply.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:../../../../Library/Marrinator/marrinator.xcodeproj">
+      location = "group:../marrinator/library/marrinator.xcodeproj">
    </FileRef>
 </Workspace>

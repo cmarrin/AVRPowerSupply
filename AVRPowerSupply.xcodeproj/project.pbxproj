@@ -19,7 +19,7 @@
 			outputFiles = (
 				"$(DERIVED_FILE_DIR)/$(INPUT_FILE_BASE).o",
 			);
-			script = "${TOOLS_DIR}/bin/avr-gcc -DF_CPU=`cat /tmp/frequency` -DMCU=`cat /tmp/mcu` -mmcu=`cat /tmp/mcu` $CDEFS $CFLAGS $CINCLUDE -c $INPUT_FILE_PATH -o $DERIVED_FILE_DIR/$INPUT_FILE_BASE.o\necho $DERIVED_FILE_DIR/$INPUT_FILE_BASE.o >> $DERIVED_FILE_DIR/fileList.txt";
+			script = "${TOOLS_DIR}/bin/avr-gcc -DF_CPU=`cat /tmp/frequency` -DMCU=`cat /tmp/mcu` -mmcu=`cat /tmp/mcu` $CDEFS $CFLAGS $CINCLUDE -c $INPUT_FILE_PATH -o $DERIVED_FILE_DIR/$INPUT_FILE_BASE.o";
 		};
 /* End PBXBuildRule section */
 
@@ -38,9 +38,9 @@
 		49AEC38B18D084FD00C010A1 /* Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = SOURCE_ROOT; };
 		49AEC38C18D084FD00C010A1 /* Report.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Report.xcconfig; sourceTree = SOURCE_ROOT; };
 		49AEC38D18D084FD00C010A1 /* Shared.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Shared.xcconfig; sourceTree = SOURCE_ROOT; };
-		49E582A418D4BEC4009A0C6E /* AVRPowerSupply */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; name = AVRPowerSupply; path = /Users/cmarrin/Personal/Projects/git/AVRPowerSupply/build/Report/AVRPowerSupply; sourceTree = "<absolute>"; };
-		49E582A518D4BEC4009A0C6E /* Program */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; name = Program; path = /Users/cmarrin/Personal/Projects/git/AVRPowerSupply/build/Report/Program; sourceTree = "<absolute>"; };
 		49E582A618D4BEEF009A0C6E /* AVRPowerSupply.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AVRPowerSupply.cpp; sourceTree = "<group>"; };
+		49E582B618D4C498009A0C6E /* AVRPowerSupply */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = AVRPowerSupply; sourceTree = BUILT_PRODUCTS_DIR; };
+		49E582B718D4C498009A0C6E /* Program */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Program; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -49,6 +49,8 @@
 			children = (
 				49E582A618D4BEEF009A0C6E /* AVRPowerSupply.cpp */,
 				49AEC38918D0840600C010A1 /* Config */,
+				49E582B618D4C498009A0C6E /* AVRPowerSupply */,
+				49E582B718D4C498009A0C6E /* Program */,
 			);
 			sourceTree = "<group>";
 		};
@@ -79,7 +81,7 @@
 			);
 			name = Program;
 			productName = Program;
-			productReference = 49E582A518D4BEC4009A0C6E /* Program */;
+			productReference = 49E582B718D4C498009A0C6E /* Program */;
 			productType = "com.apple.product-type.tool";
 		};
 		49AEC36A18CF4DCC00C010A1 /* AVRPowerSupply */ = {
@@ -100,7 +102,7 @@
 			);
 			name = AVRPowerSupply;
 			productName = Blink;
-			productReference = 49E582A418D4BEC4009A0C6E /* AVRPowerSupply */;
+			productReference = 49E582B618D4C498009A0C6E /* AVRPowerSupply */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
@@ -219,7 +221,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "echo \"$MCU\" > /tmp/mcu\necho \"$FREQUENCY\" > /tmp/frequency\n";
+			shellScript = "echo \"$MCU\" > /tmp/mcu\necho \"$FREQUENCY\" > /tmp/frequency\nrm -f $DERIVED_FILE_DIR/*.o";
 		};
 /* End PBXShellScriptBuildPhase section */
 

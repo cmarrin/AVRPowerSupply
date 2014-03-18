@@ -12,6 +12,8 @@
 	<dict>
 		<key>6350371C-0BEB-4FD0-A009-58BDF1944F04</key>
 		<string>ssh://github.com/cmarrin/AVRPowerSupply.git</string>
+		<key>A3A2328F-616F-4E42-B8F6-461143DF8F1C</key>
+		<string>ssh://github.com/cmarrin/marrinator.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>AVRPowerSupply.xcworkspace</string>
@@ -19,6 +21,8 @@
 	<dict>
 		<key>6350371C-0BEB-4FD0-A009-58BDF1944F04</key>
 		<string>..</string>
+		<key>A3A2328F-616F-4E42-B8F6-461143DF8F1C</key>
+		<string>../../marrinator</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>ssh://github.com/cmarrin/AVRPowerSupply.git</string>
@@ -35,6 +39,14 @@
 			<string>6350371C-0BEB-4FD0-A009-58BDF1944F04</string>
 			<key>IDESourceControlWCCName</key>
 			<string>AVRPowerSupply</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>A3A2328F-616F-4E42-B8F6-461143DF8F1C</string>
+			<key>IDESourceControlWCCName</key>
+			<string>marrinator</string>
 		</dict>
 	</array>
 </dict>

@@ -17,7 +17,7 @@
                BlueprintIdentifier = "4994B75C18BDBB6F0001437D"
                BuildableName = "libm8r"
                BlueprintName = "libm8r"
-               ReferencedContainer = "container:../../../../Library/Marrinator/marrinator.xcodeproj">
+               ReferencedContainer = "container:../marrinator/library/marrinator.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry

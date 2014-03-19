@@ -5,10 +5,12 @@
 //
 
 #include "m8r.h"
-#include "System.h"
-#include "EventListener.h"
+
 #include "DeviceStream.h"
+#include "EventListener.h"
+#include "FixedPoint.h"
 #include "INA219.h"
+#include "System.h"
 #include "TextLCD.h"
 #include "Timer0.h"
 #include "TimerEventMgr.h"
@@ -100,9 +102,15 @@ MyApp::handleEvent(EventType type, EventParam param)
     {
         case EV_IDLE:
         if (_captureCurrentValues) {
-            _lcd << TextLCDHome() <<
-                FS("V0=") << _current0.busMilliVolts() << FS(" ") << FS("I0=") << _current0.shuntMicroAmps() << '\n' <<
-                FS("V1=") << _current1.busMilliVolts() << FS(" ") << FS("I1=") << _current1.shuntMicroAmps();
+            char buf[9];
+            _lcd << TextLCDClear() << TextLCDHome()
+                << FS("PS0=")
+                    << FixedPointS8_8(_current0.busMilliVolts(), 1000).toString(buf) << FS("V ")
+                    << FixedPointS8_8(_current0.shuntMicroAmps(), 1000).toString(buf) << FS("ma\n")
+                << FS("PS1=")
+                    << FixedPointS8_8(_current1.busMilliVolts(), 1000).toString(buf) << FS("V ")
+                    << FixedPointS8_8(_current1.shuntMicroAmps(), 1000).toString(buf) << FS("ma\n")
+            ;
             _captureCurrentValues = false;
         }
         break;

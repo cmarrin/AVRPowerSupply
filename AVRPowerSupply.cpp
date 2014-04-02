@@ -12,6 +12,7 @@
 #include "EventListener.h"
 #include "FixedPoint.h"
 #include "INA219.h"
+#include "Menu.h"
 #include "System.h"
 #include "TextLCD.h"
 #include "Timer0.h"
@@ -86,6 +87,7 @@ public:
     void updateADC();
     void updateDisplay();
     void showPSVoltageAndCurrent(uint8_t channel, uint8_t line);
+    void showPSCurrents(uint8_t line);
     void showTestVoltages(uint8_t channel0, uint8_t channel1, uint8_t line);
     
     void updateCurrentSensor();
@@ -97,9 +99,6 @@ private:
     DeviceStream<TextLCD<16, 2, LCD_DEFAULT, LCDRS, NullOutputBit, LCDEnable, LCDD0, LCDD1, LCDD2, LCDD3> > _lcd;
     TimerEventMgr<Timer0, TimerClockDIV64> _timerEventMgr;
     RepeatingTimerEvent<100> _timerEvent;
-    Button<Switch0> _button0;
-    Button<Switch1> _button1;
-    Button<Switch2> _button2;
     
     INA219 _currentSensor[2];
     int16_t _busMilliVolts[2];
@@ -114,7 +113,17 @@ private:
     uint8_t _adcCurrentChannel;
     uint8_t _adcCurrentSamples;
     bool _captureADCValue;
+    
+    enum LineDisplayMode { LDMPS1VA, LDMPS2VA, LDMPS12A, LDMV1V2, LDMV3V4, LDMLast };
 
+    LineDisplayMode _lineDisplayMode[2];
+    
+    Button<Switch0> _button0;
+    Button<Switch1> _button1;
+    Button<Switch2> _button2;
+    ButtonSet<3> _buttons;
+    Menu _menu;
+    
     MyErrorReporter _errorReporter;
 };
 
@@ -126,10 +135,14 @@ MyApp::MyApp()
     , _adcCurrentChannel(0)
     , _adcCurrentSamples(0)
     , _captureADCValue(false)
+    , _buttons(&_button0, &_button1, &_button2)
+    , _menu(&_buttons)
 {
     _currentSensor[0].setAddress(0x40);
     _currentSensor[1].setAddress(0x41);
     _adc.setEnabled(true);
+    _lineDisplayMode[0] = LDMPS12A;
+    _lineDisplayMode[1] = LDMV1V2;
 
     sei();
     _shutdownA = false;
@@ -149,6 +162,14 @@ void MyApp::showPSVoltageAndCurrent(uint8_t channel, uint8_t line)
          << FixedPoint8_8(_shuntMilliAmps[channel], 10).toString(buf, 1) << FS("ma");
 }
 
+void MyApp::showPSCurrents(uint8_t line)
+{
+    char buf[9];
+    _lcd << TextLCDSetLine(line)
+         << FS("A:") << FixedPoint8_8(_shuntMilliAmps[0], 10).toString(buf, 1) << FS("ma")
+         << FS(" B:") << FixedPoint8_8(_shuntMilliAmps[1], 10).toString(buf, 1) << FS("ma");
+}
+
 void MyApp::showTestVoltages(uint8_t channel0, uint8_t channel1, uint8_t line)
 {
     char buf[9];
@@ -164,10 +185,17 @@ void MyApp::updateDisplay()
     }
     _lcd << TextLCDClear();
     _needsDisplay = false;
-    showPSVoltageAndCurrent(0, 0);
-    showPSVoltageAndCurrent(1, 1);
-//    showTestVoltages(0, 1, 0);
-//    showTestVoltages(2, 3, 1);
+    
+    for (uint8_t i = 0; i < 2; ++i) {
+        switch(_lineDisplayMode[i]) {
+            case LDMPS1VA: showPSVoltageAndCurrent(0, i); break;
+            case LDMPS2VA: showPSVoltageAndCurrent(1, i); break;
+            case LDMPS12A: showPSCurrents(i); break;
+            case LDMV1V2: showTestVoltages(0, 1, i); break;
+            case LDMV3V4: showTestVoltages(2, 3, i); break;
+            default: break;
+        }
+    }
 }
 
 void MyApp::updateADC()
@@ -210,8 +238,9 @@ void MyApp::updateCurrentSensor()
 
 void MyApp::handleEvent(EventType type, EventParam param)
 {
-    switch(type)
-    {
+    _menu.handleEvent(type, param);
+    
+    switch(type) {
         case EV_IDLE:
         if (_captureSensorValues) {
             _captureSensorValues = false;
@@ -224,6 +253,7 @@ void MyApp::handleEvent(EventType type, EventParam param)
             _adc.startConversion();
         }
         updateDisplay();
+        _statusLED = _menu.buttonState(0);
         break;
         case EV_ADC:
             _captureADCValue = true;
@@ -233,15 +263,24 @@ void MyApp::handleEvent(EventType type, EventParam param)
                 _captureSensorValues = true;
             }
             break;
-        case EV_BUTTON_DOWN:
-        case EV_BUTTON_UP: {
-            bool down = type == EV_BUTTON_DOWN;
-            ButtonBase* button = reinterpret_cast<ButtonBase*>(param);
-            if (button == &_button0) {
-                _statusLED = down;
-            }
-            break;
-        }
+//        case EV_BUTTON_DOWN: {
+//            ButtonBase* button = reinterpret_cast<ButtonBase*>(param);
+//            if (button == &_button0) {
+//                _lineDisplayMode[0] = (LineDisplayMode)((uint8_t)_lineDisplayMode[0] + 1);
+//                if (_lineDisplayMode[0] == LDMLast) {
+//                    _lineDisplayMode[0] = LDMPS1VA;
+//                }
+//                _needsDisplay = true;
+//            }
+//            if (button == &_button1) {
+//                _lineDisplayMode[1] = (LineDisplayMode)((uint8_t)_lineDisplayMode[1] + 1);
+//                if (_lineDisplayMode[1] == LDMLast) {
+//                    _lineDisplayMode[1] = LDMPS1VA;
+//                }
+//                _needsDisplay = true;
+//            }
+//            break;
+//        }
         default:
             break;
     }

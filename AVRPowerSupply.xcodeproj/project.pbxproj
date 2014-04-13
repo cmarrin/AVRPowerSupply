@@ -11,11 +11,22 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
+		4940DC4118ECCEB20092B750 /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			fileType = sourcecode.cpp;
+			isEditable = 1;
+			outputFiles = (
+				"$(DERIVED_FILE_DIR)/$(INPUT_FILE_BASE).o",
+			);
+			script = "${TOOLS_DIR}/bin/avr-gcc -DF_CPU=`cat /tmp/frequency` -DMCU=`cat /tmp/mcu` -mmcu=`cat /tmp/mcu` $CDEFS $CPPFLAGS $CFLAGS $CINCLUDE -c $INPUT_FILE_PATH -o $DERIVED_FILE_DIR/$INPUT_FILE_BASE.o";
+		};
 		49AEC37718CF4E3100C010A1 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
 			compilerSpec = com.apple.compilers.proxy.script;
 			fileType = sourcecode.c;
 			isEditable = 1;
+			name = "Compile AVR C File";
 			outputFiles = (
 				"$(DERIVED_FILE_DIR)/$(INPUT_FILE_BASE).o",
 			);
@@ -96,6 +107,7 @@
 				496121EF18D1EE57001A58D3 /* Generate .lss File */,
 			);
 			buildRules = (
+				4940DC4118ECCEB20092B750 /* PBXBuildRule */,
 				49AEC37718CF4E3100C010A1 /* PBXBuildRule */,
 			);
 			dependencies = (

@@ -108,6 +108,23 @@ public:
         _displayEnabled = false;
         _lcd << TextLCDClear() << s;
     }
+    
+    void setCurrentLimit(uint8_t supply)
+    {
+        if (supply == 0) {
+            _shutdownA = true;
+        } else {
+            _shutdownB = true;
+        }
+        _statusLED = true;
+    }
+    
+    void resetCurrentLimit()
+    {
+        _shutdownA = false;
+        _shutdownB = false;
+        _statusLED = false;
+    }
 
     static void display(MyApp* app)
     {
@@ -152,7 +169,8 @@ private:
         _needsDisplay = true;
     }
     
-    uint16_t curLimitMa(uint8_t supply) const { return (uint16_t) pgm_read_byte(&curLimitValues[_currentLimitAdjustIndex[supply]]) * 10; }
+    uint16_t curLimitAdjustMa(uint8_t supply) const { return (uint16_t) pgm_read_byte(&curLimitValues[_currentLimitAdjustIndex[supply]]) * 10; }
+    uint16_t curLimitMa(uint8_t supply) const { return (uint16_t) pgm_read_byte(&curLimitValues[_currentLimitIndex[supply]]) * 10; }
 
 
     MyErrorReporter _errorReporter;
@@ -182,6 +200,7 @@ private:
     uint8_t _currentLimitIndex[2];
     uint8_t _currentLimitAdjustIndex[2];
     uint8_t _currentLimitAdjustSupply = 0;
+    uint8_t _overCurrentCount[2] = { 0, 0 };
     
     enum class LineDisplayMode { PS1VA, PS2VA, PS12A, V1V2, V3V4, Last };
 
@@ -262,10 +281,11 @@ void MyApp::showTestVoltages(uint8_t channel0, uint8_t channel1, uint8_t line)
 
 void MyApp::showCurrentLimit(uint8_t supply, CurrentLimitArrow arrow)
 {
+    resetCurrentLimit();
     _displayEnabled = false;
     _lcd << TextLCDClearLine(1)
          << ((arrow == CurrentLimitArrow::Supply) ? '\x7e' : ' ')
-         << static_cast<char>('A' + supply) << ':' << curLimitMa(supply) << FS("ma")
+         << static_cast<char>('A' + supply) << ':' << curLimitAdjustMa(supply) << FS("ma")
          << ((arrow == CurrentLimitArrow::Current) ? '\x7f' : ' ');
 }
 
@@ -322,15 +342,14 @@ void MyApp::updateCurrentSensor()
         v = (v * 100 + 165) / 330;
         if (v != _shuntMilliAmps[i]) {
             _shuntMilliAmps[i] = v;
-            if (v > curLimitMa(i)) {
-                if (i == 0) {
-                    _shutdownA = true;
-                } else {
-                    _shutdownB = true;
-                }
-                _statusLED = true;
-            }
             _needsDisplay = true;
+        }
+        if (_shuntMilliAmps[i] > (int16_t) curLimitMa(i) * 10) {
+            if (_overCurrentCount[i]++ > 3) {
+                setCurrentLimit(i);
+            }
+        } else {
+            _overCurrentCount[i] = 0;
         }
     }
 }
